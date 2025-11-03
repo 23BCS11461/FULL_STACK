@@ -1,0 +1,43 @@
+// CLI Employee Management System using Node.js
+const readline = require("readline");
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+let employees = [];
+
+function menu() {
+  console.log("\n1. Add Employee\n2. List Employees\n3. Remove Employee\n4. Exit");
+  rl.question("Choose an option: ", (opt) => {
+    if (opt === "1") addEmployee();
+    else if (opt === "2") listEmployees();
+    else if (opt === "3") removeEmployee();
+    else if (opt === "4") rl.close();
+    else menu();
+  });
+}
+
+function addEmployee() {
+  rl.question("Enter Employee Name: ", (name) => {
+    rl.question("Enter Employee ID: ", (id) => {
+      employees.push({ name, id });
+      console.log(`Added: ${name} (ID: ${id})`);
+      menu();
+    });
+  });
+}
+
+function listEmployees() {
+  console.log("\n--- Employee List ---");
+  if (employees.length === 0) console.log("No employees found.");
+  else employees.forEach((e) => console.log(`${e.name} (ID: ${e.id})`));
+  menu();
+}
+
+function removeEmployee() {
+  rl.question("Enter ID to remove: ", (id) => {
+    employees = employees.filter((e) => e.id !== id);
+    console.log(`Removed employee with ID: ${id}`);
+    menu();
+  });
+}
+
+menu();
