@@ -1,0 +1,57 @@
+// cardsApp.js - REST API + Simple Frontend for Playing Cards
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+// Serve the HTML frontend
+app.get("/", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Playing Card REST API</title>
+    </head>
+    <body style="font-family: Arial; padding: 20px;">
+      <h2>Playing Card REST API using Express.js</h2>
+      <button onclick="loadCards()">Show All Cards</button>
+      <ul id="cardList"></ul>
+      <script>
+        async function loadCards() {
+          const res = await fetch('/cards');
+          const data = await res.json();
+          document.getElementById('cardList').innerHTML = 
+            data.map(c => '<li>' + c.value + ' of ' + c.suit + '</li>').join('');
+        }
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+// In-memory data
+let cards = [
+  { id: 1, suit: "Hearts", value: "A" },
+  { id: 2, suit: "Spades", value: "K" }
+];
+
+// REST API routes
+app.get("/cards", (req, res) => res.json(cards));
+
+app.get("/cards/:id", (req, res) => {
+  const card = cards.find(c => c.id == req.params.id);
+  card ? res.json(card) : res.status(404).json({ message: "Card not found" });
+});
+
+app.post("/cards", (req, res) => {
+  const newCard = { id: Date.now(), ...req.body };
+  cards.push(newCard);
+  res.status(201).json(newCard);
+});
+
+app.delete("/cards/:id", (req, res) => {
+  cards = cards.filter(c => c.id != req.params.id);
+  res.json({ message: "Card deleted" });
+});
+
+app.listen(3000, () => console.log("Server running on http://localhost:3000"));
