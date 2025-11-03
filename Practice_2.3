@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive SVG Drawing Tool</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f4f4f4; }
+    h1 { color: #333; }
+    svg { border: 2px solid #555; background: #fff; width: 80%; height: 400px; margin-top: 10px; cursor: crosshair; }
+    select { padding: 6px; }
+  </style>
+</head>
+<body>
+
+  <h1>Interactive SVG Drawing Tool</h1>
+  <label>Choose Shape:</label>
+  <select id="shape">
+    <option value="rect">Rectangle</option>
+    <option value="line">Line</option>
+  </select>
+
+  <svg id="canvas"></svg>
+
+  <script>
+    const svg = document.getElementById("canvas");
+    const shapeSelect = document.getElementById("shape");
+    let drawing = false, startX, startY, shape;
+
+    svg.addEventListener("mousedown", e => {
+      drawing = true;
+      startX = e.offsetX; startY = e.offsetY;
+      const type = shapeSelect.value;
+      if (type === "rect") {
+        shape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        shape.setAttribute("x", startX);
+        shape.setAttribute("y", startY);
+        shape.setAttribute("width", 0);
+        shape.setAttribute("height", 0);
+      } else {
+        shape = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        shape.setAttribute("x1", startX);
+        shape.setAttribute("y1", startY);
+        shape.setAttribute("x2", startX);
+        shape.setAttribute("y2", startY);
+      }
+      shape.setAttribute("stroke", "blue");
+      shape.setAttribute("fill", "lightblue");
+      svg.appendChild(shape);
+    });
+
+    svg.addEventListener("mousemove", e => {
+      if (!drawing) return;
+      const x = e.offsetX, y = e.offsetY;
+      if (shape.tagName === "rect") {
+        shape.setAttribute("width", Math.abs(x - startX));
+        shape.setAttribute("height", Math.abs(y - startY));
+        shape.setAttribute("x", Math.min(x, startX));
+        shape.setAttribute("y", Math.min(y, startY));
+      } else {
+        shape.setAttribute("x2", x);
+        shape.setAttribute("y2", y);
+      }
+    });
+
+    svg.addEventListener("mouseup", () => drawing = false);
+  </script>
+
+</body>
+</html>
