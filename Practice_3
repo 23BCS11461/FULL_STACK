@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Person Class Hierarchy (React)</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body style="font-family: Arial; padding: 20px;">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // Base class
+      class Person {
+        constructor(name, age) {
+          this.name = name;
+          this.age = age;
+        }
+        info() {
+          return `Name: ${this.name}, Age: ${this.age}`;
+        }
+      }
+
+      // Student subclass
+      class Student extends Person {
+        constructor(name, age, course) {
+          super(name, age);
+          this.course = course;
+        }
+        info() {
+          return `${super.info()}, Course: ${this.course}`;
+        }
+      }
+
+      // Teacher subclass
+      class Teacher extends Person {
+        constructor(name, age, subject) {
+          super(name, age);
+          this.subject = subject;
+        }
+        info() {
+          return `${super.info()}, Subject: ${this.subject}`;
+        }
+      }
+
+      // React component
+      function App() {
+        const s1 = new Student("Alice", 21, "Computer Science");
+        const t1 = new Teacher("Mr. John", 40, "Mathematics");
+
+        return (
+          <div>
+            <h2>Person Class Hierarchy Example</h2>
+            <p>{s1.info()}</p>
+            <p>{t1.info()}</p>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
